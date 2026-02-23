@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Offline PDF annotation and redlining tool">
+    <link rel="manifest" href="manifest.json">
     <title>DraftAnnotator - PDF Redlining Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -102,49 +107,49 @@
         <!-- Tool buttons with SVG icons -->
         <div class="flex items-center gap-1">
             <!-- 1: Select -->
-            <button data-tool="select" class="tool-btn active-tool" title="Select (1)">
+            <button data-tool="select" class="tool-btn active-tool" title="Select (1 / S)">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4l7 18 2.5-7.5L21 12 4 4z"/></svg>
-                <span class="tool-key">1</span>
+                <span class="tool-key">1/S</span>
             </button>
             <!-- 2: Draw -->
-            <button data-tool="draw" class="tool-btn" title="Pencil (2)">
+            <button data-tool="draw" class="tool-btn" title="Pencil (2 / D)">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                <span class="tool-key">2</span>
+                <span class="tool-key">2/D</span>
             </button>
-            <!-- 3: Line -->
-            <button data-tool="line" class="tool-btn" title="Line (3)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
-                <span class="tool-key">3</span>
-            </button>
-            <!-- 4: Arrow -->
-            <button data-tool="arrow" class="tool-btn" title="Arrow (4)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/><polyline points="10,5 19,5 19,14"/></svg>
-                <span class="tool-key">4</span>
-            </button>
-            <!-- 5: Rectangle -->
-            <button data-tool="rect" class="tool-btn" title="Rectangle (5)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="14" rx="1"/></svg>
-                <span class="tool-key">5</span>
-            </button>
-            <!-- 6: Circle -->
-            <button data-tool="circle" class="tool-btn" title="Circle (6)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
-                <span class="tool-key">6</span>
-            </button>
-            <!-- 7: Text -->
-            <button data-tool="text" class="tool-btn" title="Text (7)">
+            <!-- 3: Text -->
+            <button data-tool="text" class="tool-btn" title="Text (3 / T)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 5h12M12 5v14M9 19h6"/></svg>
-                <span class="tool-key">7</span>
+                <span class="tool-key">3/T</span>
+            </button>
+            <!-- 4: Line -->
+            <button data-tool="line" class="tool-btn" title="Line (4 / L)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+                <span class="tool-key">4/L</span>
+            </button>
+            <!-- 5: Arrow -->
+            <button data-tool="arrow" class="tool-btn" title="Arrow (5 / A)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/><polyline points="10,5 19,5 19,14"/></svg>
+                <span class="tool-key">5/A</span>
+            </button>
+            <!-- 6: Rectangle -->
+            <button data-tool="rect" class="tool-btn" title="Rectangle (6 / R)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="14" rx="1"/></svg>
+                <span class="tool-key">6/R</span>
+            </button>
+            <!-- 7: Circle -->
+            <button data-tool="circle" class="tool-btn" title="Circle (7 / C)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+                <span class="tool-key">7/C</span>
             </button>
             <!-- 8: Highlight -->
-            <button data-tool="highlight" class="tool-btn" title="Highlight (8)">
+            <button data-tool="highlight" class="tool-btn" title="Highlight (8 / H)">
                 <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.8"><rect x="3" y="14" width="18" height="5" rx="1" fill="rgba(250,204,21,0.7)"/><path d="M7 4l8.5 8.5L13 15H7l-2-2.5L7 4z" fill="currentColor" opacity="0.6"/></svg>
-                <span class="tool-key">8</span>
+                <span class="tool-key">8/H</span>
             </button>
             <!-- 9: Revision Cloud -->
-            <button data-tool="cloud" class="tool-btn" title="Rev Cloud (9)">
+            <button data-tool="cloud" class="tool-btn" title="Rev Cloud (9 / V)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 19a4 4 0 01-.88-7.9A5.5 5.5 0 0115.5 8a5 5 0 014.42 4.04A3.5 3.5 0 0119 19H6.5z"/></svg>
-                <span class="tool-key">9</span>
+                <span class="tool-key">9/V</span>
             </button>
         </div>
 
@@ -217,11 +222,11 @@
             <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-200">
                 <h3 class="font-bold text-indigo-900 mb-1 text-sm">Shortcuts</h3>
                 <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-xs text-indigo-800">
-                    <span><b>1</b> Select</span><span><b>2</b> Draw</span>
-                    <span><b>3</b> Line</span><span><b>4</b> Arrow</span>
-                    <span><b>5</b> Rect</span><span><b>6</b> Circle</span>
-                    <span><b>7</b> Text</span><span><b>8</b> Highlight</span>
-                    <span><b>9</b> Cloud</span><span></span>
+                    <span><b>1 / S</b> Select</span><span><b>2 / D</b> Draw</span>
+                    <span><b>3 / T</b> Text</span><span><b>4 / L</b> Line</span>
+                    <span><b>5 / A</b> Arrow</span><span><b>6 / R</b> Rect</span>
+                    <span><b>7 / C</b> Circle</span><span><b>8 / H</b> Highlight</span>
+                    <span><b>9 / V</b> Cloud</span><span></span>
                     <span class="col-span-2 mt-1 border-t border-indigo-200 pt-1"><b>Ctrl+Z</b> Undo</span>
                     <span class="col-span-2"><b>Ctrl+Y</b> Redo</span>
                     <span class="col-span-2"><b>Del</b> Delete</span>
@@ -246,7 +251,7 @@
         <p id="initialMessage" class="text-center text-gray-600 p-10 text-xl bg-white rounded-2xl shadow-xl mt-16">
             <b>DraftAnnotator</b><br>
             <span class="text-base">Load a PDF to start redlining</span><br>
-            <span class="text-sm mt-2 block text-gray-500">Keys 1-9 for tools | Right-click to pan | Ctrl+Z/Y for undo/redo</span>
+            <span class="text-sm mt-2 block text-gray-500">Keys 1-9 or S/D/T/L/A/R/C/H/V for tools | Right-click to pan | Ctrl+Z/Y for undo/redo</span>
         </p>
     </div>
 </main>
@@ -261,7 +266,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<script>if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
@@ -882,7 +887,7 @@ async function loadPDF(f){
         showMsg(`PDF loaded: ${numPages} page(s)`);
     }catch(e){
         console.error('Load err:',e);
-        pdfViewer.innerHTML=`<div class="text-red-600 p-8">Error: ${e.message}</div>`;
+        const errDiv=document.createElement('div');errDiv.className='text-red-600 p-8';errDiv.textContent='Error: '+e.message;pdfViewer.innerHTML='';pdfViewer.appendChild(errDiv);
     }finally{
         if(ldg)ldg.style.display='none';
         if(loadingOverlay)loadingOverlay.classList.add('hidden');
@@ -890,219 +895,93 @@ async function loadPDF(f){
     }
 }
 
+function normalizeRotationAngle(angle){
+    const rounded=Math.round(angle||0);
+    const rot=((rounded%360)+360)%360;
+    return (rot===90||rot===180||rot===270)?rot:0;
+}
+
+function canvasToPngBytes(canvas){
+    const dataUrl=canvas.toDataURL('image/png');
+    const idx=dataUrl.indexOf(',');
+    const b64=idx>=0?dataUrl.slice(idx+1):'';
+    const bin=atob(b64);
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    return bytes;
+}
+
+function buildNormalizedOverlayCanvas(fc,rotation){
+    const src=fc.lowerCanvasEl;
+    if(!src||!src.width||!src.height)return null;
+
+    const rot=normalizeRotationAngle(rotation);
+    const out=document.createElement('canvas');
+    if(rot===90||rot===270){
+        out.width=src.height;
+        out.height=src.width;
+    }else{
+        out.width=src.width;
+        out.height=src.height;
+    }
+    const ctx=out.getContext('2d');
+    if(!ctx)return null;
+
+    // Convert from viewer orientation back to the page's raw orientation.
+    switch(rot){
+        case 90:
+            ctx.translate(0,out.height);
+            ctx.rotate(-Math.PI/2);
+            break;
+        case 180:
+            ctx.translate(out.width,out.height);
+            ctx.rotate(Math.PI);
+            break;
+        case 270:
+            ctx.translate(out.width,0);
+            ctx.rotate(Math.PI/2);
+            break;
+    }
+    ctx.drawImage(src,0,0);
+    return out;
+}
+
 async function saveAllPagesAsPDF(){
     if(!numPages||!fabricCanvases.size){showMsg("Load PDF first");return;}
     if(!originalPdfBytes){showMsg("Missing source PDF");return;}
     btnSavePdf.disabled=true;btnSavePdf.textContent='Generating...';
     try{
-        // Commit in-progress text edits
+        // Commit in-progress text edits before flattening to image.
         fabricCanvases.forEach(c=>{
             const a=c.getActiveObject();
             if(a&&a.isEditing&&a.exitEditing){a.exitEditing();c.discardActiveObject();c.renderAll();}
         });
         syncPendingTextEdits();
 
-        const {PDFDocument,StandardFonts,rgb,degrees}=window.PDFLib;
+        const {PDFDocument}=window.PDFLib;
         let baseDoc;
         try{baseDoc=await PDFDocument.load(originalPdfBytes);}
         catch(e){baseDoc=await PDFDocument.load(originalPdfBytes,{ignoreEncryption:true});}
-        const helv=await baseDoc.embedFont(StandardFonts.Helvetica);
-        const helvBold=await baseDoc.embedFont(StandardFonts.HelveticaBold);
-        const timesRoman=await baseDoc.embedFont(StandardFonts.TimesRoman);
-        const timesBold=await baseDoc.embedFont(StandardFonts.TimesRomanBold);
-        const courier=await baseDoc.embedFont(StandardFonts.Courier);
-        const courierBold=await baseDoc.embedFont(StandardFonts.CourierBold);
-        function pickFont(ff,bold){
-            if(ff==='serif') return bold?timesBold:timesRoman;
-            if(ff==='monospace') return bold?courierBold:courier;
-            return bold?helvBold:helv;
-        }
         const conts=Array.from(document.querySelectorAll('.pdf-page-container')).sort((a,b)=>parseInt(a.dataset.pageNum)-parseInt(b.dataset.pageNum));
 
-        function fabricColorToPdfColor(colorStr){
-            try{
-                const ctx=document.createElement('canvas').getContext('2d');
-                ctx.fillStyle=colorStr||'black';
-                const c=ctx.fillStyle;
-                if(c.startsWith('#')){
-                    const hex=c.slice(1);
-                    const full=hex.length===3?hex.split('').map(ch=>ch+ch).join(''):hex;
-                    const num=parseInt(full,16);
-                    return rgb(((num>>16)&255)/255,((num>>8)&255)/255,(num&255)/255);
-                }
-                const m=c.match(/^rgba?\((\d+), ?(\d+), ?(\d+)/i);
-                if(m) return rgb(parseInt(m[1])/255,parseInt(m[2])/255,parseInt(m[3])/255);
-            }catch(e){}
-            return rgb(1,0,0);
-        }
-
-        function drawTextObject(obj,page,pageW,pageH,rot,pxW,pxH){
-            if(!obj.text||!obj.text.trim())return;
-            const color=fabricColorToPdfColor(obj.fill);
-            const matrix=obj.calcTransformMatrix();
-            const tp=(lx,ly)=>{
-                const p=fabric.util.transformPoint(new fabric.Point(lx,ly),matrix);
-                const nx=p.x/pxW,ny=p.y/pxH;
-                switch(rot){
-                    case 90:  return {x:ny*pageW,y:nx*pageH};
-                    case 180: return {x:(1-nx)*pageW,y:ny*pageH};
-                    case 270: return {x:(1-ny)*pageW,y:(1-nx)*pageH};
-                    default:  return {x:nx*pageW,y:(1-ny)*pageH};
-                }
-            };
-            const origin=tp(0,0),xAxis=tp(1,0),yAxis=tp(0,1);
-            const xVec={x:xAxis.x-origin.x,y:xAxis.y-origin.y};
-            const yVec={x:yAxis.x-origin.x,y:yAxis.y-origin.y};
-            const yScale=Math.hypot(yVec.x,yVec.y);
-            if(!Number.isFinite(yScale)||yScale===0)return;
-            const angle=Math.atan2(xVec.y,xVec.x)*180/Math.PI;
-            const baseFontSize=obj.fontSize||12;
-            const size=baseFontSize*yScale;
-            const lineHeight=(obj.lineHeight||1.16)*baseFontSize;
-            const opacity=obj.opacity!==undefined?obj.opacity:1;
-            const w2=obj.width/2,h2=obj.height/2;
-            (obj.text||'').split(/\r?\n/).forEach((line,idx)=>{
-                const baseline=tp(-w2,-h2+baseFontSize+(idx*lineHeight));
-                page.drawText(line,{
-                    x:baseline.x,
-                    y:baseline.y,
-                    size,
-                    font:pickFont(obj.fontFamily,obj.fontWeight==='bold'),
-                    color,
-                    rotate:degrees(angle),
-                    opacity
-                });
-            });
-        }
-
-        // ── Vector annotation export ──
-        // Converts each fabric object to pdf-lib drawing commands (no rasterization)
-        function drawVectorAnnotation(obj,page,pageW,pageH,rot,pxW,pxH){
-            const type=obj.type;
-            if(type==='i-text'||type==='textbox'||obj.visible===false) return;
-
-            if(type==='group'){
-                (obj._objects||[]).forEach(ch=>drawVectorAnnotation(ch,page,pageW,pageH,rot,pxW,pxH));
-                return;
-            }
-
-            const matrix=obj.calcTransformMatrix();
-            // Map local coords → canvas pixels → raw MediaBox SVG Y-down coords
-            // pdf-lib does NOT handle rotation, so we manually remap visual→raw coords
-            const tp=(lx,ly)=>{
-                const p=fabric.util.transformPoint(new fabric.Point(lx,ly),matrix);
-                const nx=p.x/pxW,ny=p.y/pxH;
-                switch(rot){
-                    case 90:  return {x:ny*pageW,y:(1-nx)*pageH};
-                    case 180: return {x:(1-nx)*pageW,y:(1-ny)*pageH};
-                    case 270: return {x:(1-ny)*pageW,y:nx*pageH};
-                    default:  return {x:nx*pageW,y:ny*pageH};
-                }
-            };
-
-            const sCol=obj.stroke?fabricColorToPdfColor(obj.stroke):null;
-            const fCol=(obj.fill&&obj.fill!=='transparent'&&obj.fill!=='')?fabricColorToPdfColor(obj.fill):null;
-            const p0=tp(0,0),px=tp(1,0),py=tp(0,1);
-            const localScaleX=Math.hypot(px.x-p0.x,px.y-p0.y);
-            const localScaleY=Math.hypot(py.x-p0.x,py.y-p0.y);
-            const sw=(obj.strokeWidth||0)*((localScaleX+localScaleY)/2);
-            const op=obj.opacity!==undefined?obj.opacity:1;
-            let d='', wantFill=false;
-
-            if(type==='line'){
-                const lp=obj.calcLinePoints();
-                const a=tp(lp.x1,lp.y1), b=tp(lp.x2,lp.y2);
-                d=`M ${a.x} ${a.y} L ${b.x} ${b.y}`;
-
-            }else if(type==='rect'){
-                const w2=obj.width/2, h2=obj.height/2;
-                const a=tp(-w2,-h2),b=tp(w2,-h2),c=tp(w2,h2),e=tp(-w2,h2);
-                d=`M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} L ${e.x} ${e.y} Z`;
-
-            }else if(type==='ellipse'){
-                const rx=obj.rx||0,ry=obj.ry||0;
-                if(!rx&&!ry) return;
-                const K=0.5522847498;
-                const t=tp(0,-ry),r=tp(rx,0),b=tp(0,ry),l=tp(-rx,0);
-                const c1a=tp(rx*K,-ry),c1b=tp(rx,-ry*K);
-                const c2a=tp(rx,ry*K),c2b=tp(rx*K,ry);
-                const c3a=tp(-rx*K,ry),c3b=tp(-rx,ry*K);
-                const c4a=tp(-rx,-ry*K),c4b=tp(-rx*K,-ry);
-                d=`M ${t.x} ${t.y}`
-                 +` C ${c1a.x} ${c1a.y} ${c1b.x} ${c1b.y} ${r.x} ${r.y}`
-                 +` C ${c2a.x} ${c2a.y} ${c2b.x} ${c2b.y} ${b.x} ${b.y}`
-                 +` C ${c3a.x} ${c3a.y} ${c3b.x} ${c3b.y} ${l.x} ${l.y}`
-                 +` C ${c4a.x} ${c4a.y} ${c4b.x} ${c4b.y} ${t.x} ${t.y} Z`;
-
-            }else if(type==='circle'){
-                const rad=obj.radius||0;
-                if(!rad) return;
-                const K=0.5522847498;
-                const t=tp(0,-rad),r=tp(rad,0),b=tp(0,rad),l=tp(-rad,0);
-                const c1a=tp(rad*K,-rad),c1b=tp(rad,-rad*K);
-                const c2a=tp(rad,rad*K),c2b=tp(rad*K,rad);
-                const c3a=tp(-rad*K,rad),c3b=tp(-rad,rad*K);
-                const c4a=tp(-rad,-rad*K),c4b=tp(-rad*K,-rad);
-                d=`M ${t.x} ${t.y}`
-                 +` C ${c1a.x} ${c1a.y} ${c1b.x} ${c1b.y} ${r.x} ${r.y}`
-                 +` C ${c2a.x} ${c2a.y} ${c2b.x} ${c2b.y} ${b.x} ${b.y}`
-                 +` C ${c3a.x} ${c3a.y} ${c3b.x} ${c3b.y} ${l.x} ${l.y}`
-                 +` C ${c4a.x} ${c4a.y} ${c4b.x} ${c4b.y} ${t.x} ${t.y} Z`;
-
-            }else if(type==='triangle'){
-                const w2=obj.width/2,h2=obj.height/2;
-                const a=tp(0,-h2),b=tp(-w2,h2),c=tp(w2,h2);
-                d=`M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} Z`;
-                wantFill=true;
-
-            }else if(type==='path'){
-                const pd=obj.path;
-                if(!pd||!pd.length) return;
-                const off=obj.pathOffset||{x:0,y:0};
-                pd.forEach(cmd=>{
-                    const c=cmd[0];
-                    if(c==='Z'||c==='z'){d+='Z ';return;}
-                    d+=c+' ';
-                    for(let i=1;i<cmd.length;i+=2){
-                        if(i+1<cmd.length){
-                            const p=tp(cmd[i]-off.x,cmd[i+1]-off.y);
-                            d+=`${p.x} ${p.y} `;
-                        }
-                    }
-                });
-
-            }else{
-                console.warn('[Save] Skipping unknown type:',type);
-                return;
-            }
-
-            if(!d.trim()) return;
-            const opts={};
-            if(sCol&&sw>0){opts.borderColor=sCol;opts.borderWidth=sw;opts.borderOpacity=op;}
-            if(fCol&&wantFill){opts.color=fCol;opts.opacity=op;}
-            if(!opts.borderColor&&!opts.color) return;
-            opts.x=0; opts.y=pageH;
-            try{page.drawSvgPath(d.trim(),opts);}
-            catch(e){console.warn('[Save] drawSvgPath failed:',type,e.message);}
-        }
-
-        // Process each page
+        let stampedPages=0;
         for(const ct of conts){
             const pn=parseInt(ct.dataset.pageNum,10),fc=fabricCanvases.get(pn);
             if(!fc)continue;
-            const objs=fc.getObjects();
-            if(objs.length===0)continue;
+            if(fc.getObjects().length===0)continue;
             const page=baseDoc.getPage(pn-1);
-            const pageW=page.getWidth(),pageH=page.getHeight();
-            const rot=page.getRotation().angle;
-            const pxW=fc.getWidth(),pxH=fc.getHeight();
-
-            objs.forEach(obj=>{
-                if(obj.type==='i-text'||obj.type==='textbox')
-                    drawTextObject(obj,page,pageW,pageH,rot,pxW,pxH);
-                else
-                    drawVectorAnnotation(obj,page,pageW,pageH,rot,pxW,pxH);
+            const overlayCanvas=buildNormalizedOverlayCanvas(fc,page.getRotation().angle);
+            if(!overlayCanvas)continue;
+            const pngBytes=canvasToPngBytes(overlayCanvas);
+            if(!pngBytes.length)continue;
+            const overlay=await baseDoc.embedPng(pngBytes);
+            page.drawImage(overlay,{
+                x:0,
+                y:0,
+                width:page.getWidth(),
+                height:page.getHeight()
             });
+            stampedPages++;
         }
 
         const pdfBytes=await baseDoc.save({useObjectStreams:false});
@@ -1111,7 +990,7 @@ async function saveAllPagesAsPDF(){
         const saveName=/\.pdf$/i.test(sourceName)?sourceName.replace(/\.pdf$/i,'_annotated.pdf'):`${sourceName}_annotated.pdf`;
         const link=document.createElement('a');
         link.href=URL.createObjectURL(blob);link.download=saveName;link.click();
-        setTimeout(()=>URL.revokeObjectURL(link.href),2000);
+        setTimeout(()=>URL.revokeObjectURL(link.href),60000);
         fabricCanvases.forEach((c,pn)=>{
             const state=getSerializedCanvasState(c);
             c._lastSavedState=state;
@@ -1119,12 +998,11 @@ async function saveAllPagesAsPDF(){
         });
         hasPendingTextEdits=false;
         recomputeUnsavedChanges();
-        showMsg("PDF saved!");
+        showMsg(stampedPages>0?"PDF saved!":"PDF saved (no annotations found)");
     }catch(err){console.error('Save err:',err);showMsg(`Error: ${err.message}`);}
     finally{btnSavePdf.disabled=false;btnSavePdf.textContent='Save PDF';}
 }
 
-// ─── UI HELPERS ─────────────────────────────────────
 function showMsg(m){
     const b=document.getElementById('tempMessageBox');if(!b)return;
     b.textContent=m;b.style.opacity='1';
@@ -1142,13 +1020,22 @@ window.addEventListener('scroll',()=>{
 const TOOL_CODE_MAP={
     'Digit1':'select','Numpad1':'select',
     'Digit2':'draw','Numpad2':'draw',
-    'Digit3':'line','Numpad3':'line',
-    'Digit4':'arrow','Numpad4':'arrow',
-    'Digit5':'rect','Numpad5':'rect',
-    'Digit6':'circle','Numpad6':'circle',
-    'Digit7':'text','Numpad7':'text',
+    'Digit3':'text','Numpad3':'text',
+    'Digit4':'line','Numpad4':'line',
+    'Digit5':'arrow','Numpad5':'arrow',
+    'Digit6':'rect','Numpad6':'rect',
+    'Digit7':'circle','Numpad7':'circle',
     'Digit8':'highlight','Numpad8':'highlight',
     'Digit9':'cloud','Numpad9':'cloud',
+    'KeyS':'select',
+    'KeyD':'draw',
+    'KeyT':'text',
+    'KeyL':'line',
+    'KeyA':'arrow',
+    'KeyR':'rect',
+    'KeyC':'circle',
+    'KeyH':'highlight',
+    'KeyV':'cloud',
 };
 
 document.addEventListener('keydown',e=>{
@@ -1233,7 +1120,39 @@ if(!window.PDFLib){
     showMsg('Save disabled: pdf-lib missing');
     btnSavePdf.disabled=true;
 }
+
+// ─── LIBRARY LOAD CHECKS ────────────────────────────
+(function checkLibraries(){
+    const missing=[];
+    if(!window.pdfjsLib) missing.push('pdf.js');
+    if(!window.fabric) missing.push('fabric.js');
+    if(!window.PDFLib) missing.push('pdf-lib');
+    if(missing.length>0){
+        const msg=document.getElementById('initialMessage');
+        if(msg) msg.innerHTML=`<b style="color:#dc2626;">Failed to load: ${missing.join(', ')}</b><br>
+            <span class="text-base">Check your internet connection and reload.<br>
+            Once loaded, the app works offline.</span>`;
+    }
+})();
+
+// ─── SERVICE WORKER REGISTRATION ────────────────────
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+        reg.addEventListener('updatefound',()=>{
+            const nw=reg.installing;
+            if(nw) nw.addEventListener('statechange',()=>{
+                if(nw.state==='activated'&&navigator.serviceWorker.controller)
+                    showMsg('App updated — reload for latest version');
+            });
+        });
+    }).catch(e=>console.warn('SW registration failed:',e));
+}
+
+// ─── OFFLINE / ONLINE STATUS ────────────────────────
+window.addEventListener('online',()=>showMsg('Back online'));
+window.addEventListener('offline',()=>showMsg('Offline — app still works'));
 </script>
 
 </body>
 </html>
+
