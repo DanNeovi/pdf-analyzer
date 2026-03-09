@@ -1,8 +1,9 @@
 // DraftAnnotator Service Worker — caches CDN libs for offline use
-const CACHE_NAME = 'draftannotator-v2';
+const CACHE_NAME = 'draftannotator-v9';
 const APP_SHELL = [
     './',
-    './pdf-annotator.html'
+    './pdf-annotator.html',
+    './manifest.json'
 ];
 const CDN_ASSETS = [
     'https://cdn.tailwindcss.com',
