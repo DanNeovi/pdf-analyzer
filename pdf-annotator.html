@@ -832,6 +832,7 @@ let defaultPageSize={w:900,h:1200};
 let arrowMode='single';
 let highlightMode='pen';
 let zoomFactor=1.0; // 1.0 = fit-to-width (100%)
+let pendingResizeFocus=null;
 let shapeFillEnabled=false;
 let shapeFillOpacity=25;
 let activeContextPageNum=1;
@@ -3371,10 +3372,9 @@ async function renderPage(n,containerOverride=null){
         cont.addEventListener('contextmenu',e=>e.preventDefault());
 
         fabricCanvases.set(n,fc);
-        // Keep all canvases in a shared base coordinate space so annotations stay
-        // consistent across pages rendered at different times/zooms.
-        fc._renderZoom=1;
-        fc._renderBaseScale=baseScale;
+        // Objects live in fitScale-relative coords (independent of zoomFactor).
+        // _renderFitScale = fitScale when canvas was created; vpt = baseScale / _renderFitScale.
+        fc._renderFitScale=baseScale/zoomFactor;
         fc.setViewportTransform([zoomFactor,0,0,zoomFactor,0,0]);
         // Lightweight init for this canvas only (no showMsg, no reconfiguring all canvases)
         fc.selection=activeTool==='select';
@@ -3786,9 +3786,7 @@ async function saveAllPagesAsPDF(){
             // Temporarily reset zoom viewport transform so export uses base coordinates
             const savedVpt=fc.viewportTransform.slice();
             const savedW=fc.getWidth(),savedH=fc.getHeight();
-            const renderZoom=fc._renderZoom||1;
-            const renderBase=fc._renderBaseScale||baseScale;
-            const currentVptRatio=(zoomFactor/renderZoom)*(baseScale/renderBase);
+            const currentVptRatio=baseScale/(fc._renderFitScale||(baseScale/zoomFactor));
             fc.setViewportTransform([1,0,0,1,0,0]);
             fc.setWidth(savedW/currentVptRatio);
             fc.setHeight(savedH/currentVptRatio);
@@ -4538,7 +4536,11 @@ async function applyZoom(newFactor){
     newFactor=clampZoom(newFactor);
     if(Math.abs(newFactor-zoomFactor)<0.001)return;
     const scrollEl=getScrollContainer();
-    const viewportFocus=captureViewportFocus(scrollEl);
+    let scrollRatio=0;
+    if(scrollEl){
+        const maxScroll=Math.max(1,scrollEl.scrollHeight-scrollEl.clientHeight);
+        scrollRatio=scrollEl.scrollTop/maxScroll;
+    }
     const editingStates=captureEditingTextStates();
     try{
         zoomFactor=newFactor;
@@ -4559,9 +4561,7 @@ async function applyZoom(newFactor){
             const cont=document.querySelector(`[data-page-num="${n}"]`);
             if(cont){cont.style.width=`${dw}px`;cont.style.height=`${dh}px`;cont.style.minHeight=`${dh}px`;}
 
-            const renderZoom=fc._renderZoom||1;
-            const renderBase=fc._renderBaseScale||baseScale;
-            const vptRatio=(zoomFactor/renderZoom)*(baseScale/renderBase);
+            const vptRatio=baseScale/(fc._renderFitScale||(baseScale/zoomFactor));
             fc.setWidth(dw);fc.setHeight(dh);
             fc.setViewportTransform([vptRatio,0,0,vptRatio,0,0]);
             refreshCanvasTextRendering(fc);
@@ -4597,7 +4597,13 @@ async function applyZoom(newFactor){
         }
 
         if(scrollEl){
-            restoreViewportFocus(scrollEl,viewportFocus);
+            if(pendingResizeFocus){
+                restoreViewportFocus(scrollEl,pendingResizeFocus);
+                pendingResizeFocus=null;
+            }else{
+                const maxScroll=Math.max(1,scrollEl.scrollHeight-scrollEl.clientHeight);
+                scrollEl.scrollTop=scrollRatio*maxScroll;
+            }
         }
         updateVisiblePage();
         // Deferred offset recalc after DOM reflow settles
@@ -4641,6 +4647,8 @@ let _resizeTimer=null;
 window.addEventListener('resize',()=>{
     clearTimeout(_resizeTimer);
     _resizeTimer=setTimeout(()=>{
+        const scrollEl=getScrollContainer();
+        pendingResizeFocus=scrollEl?captureViewportFocus(scrollEl):null;
         if(pdfDoc&&baseScale!==null){
             // Force applyZoom to run even though zoomFactor hasn't changed
             // by temporarily nudging it, so baseScale recalculates from new window width
