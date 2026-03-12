@@ -5,7 +5,11 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebSearch",
-      "WebFetch(domain:api.iconify.design)"
+      "WebFetch(domain:api.iconify.design)",
+      "Bash(for func:*)",
+      "Bash(do echo:*)",
+      "Bash(grep -c \"$func\" 'c:\\\\Users\\\\danie\\\\Documents\\\\GitHub\\\\pdf-analyzer\\\\pdf-annotator.html')",
+      "Bash(done)"
     ]
   }
 }
