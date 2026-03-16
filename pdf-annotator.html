@@ -3318,7 +3318,7 @@ async function renderPage(n,containerOverride=null){
         fc.on('path:created',e=>{
             if(e.path){
                 const canSelect=activeTool==='select';
-                e.path.set({selectable:canSelect,evented:canSelect,hasControls:true,hasBorders:true,strokeUniform:true});
+                e.path.set({selectable:canSelect,evented:canSelect,hasControls:true,hasBorders:true,strokeUniform:true,padding:8});
                 if(activeTool==='highlight'&&highlightMode==='pen'){
                     e.path._hlBaseColor=currentColor;
                     e.path.set({opacity:1,stroke:getHighlightOpaqueColor(),annotationType:'highlightPen',
