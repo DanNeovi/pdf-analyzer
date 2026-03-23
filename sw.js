@@ -1,5 +1,5 @@
 // DraftAnnotator Service Worker — caches CDN libs for offline use
-const CACHE_NAME = 'draftannotator-v10';
+const CACHE_NAME = 'draftannotator-v11';
 const APP_SHELL = [
     './',
     './pdf-annotator.html',
