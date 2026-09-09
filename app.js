@@ -1402,6 +1402,7 @@ async function createNativeEditingPdf(pdfBytes){
     let document;
     try{document=await PDFDocument.load(pdfBytes);}
     catch(error){document=await PDFDocument.load(pdfBytes,{ignoreEncryption:true});}
+    window.NativeAnnotationUtils.normalizeDuplicateObjectNumbers(document,window.PDFLib);
     const descriptors=window.NativeAnnotationUtils.readDraftNativeAnnotations(document,window.PDFLib);
     window.NativeAnnotationUtils.stripDraftNativeAnnotations(document,window.PDFLib);
     const displayBytes=await document.save({useObjectStreams:true});
@@ -4001,7 +4002,17 @@ async function loadPDF(f){
         document.getElementById('fileNameDisplay').classList.remove('hidden');
         document.getElementById('fileNameDisplay').classList.add('flex');
         const ab=await f.arrayBuffer();
-        const uploadedPdfBytes=new Uint8Array(ab);
+        let uploadedPdfBytes=new Uint8Array(ab);
+        // Recover PDFs previously saved with colliding object generations before
+        // PDF.js falls back to an incomplete page tree or loses attachments.
+        if(window.PDFLib&&window.NativeAnnotationUtils?.normalizeDuplicateObjectNumbers){
+            try{
+                const candidate=await window.PDFLib.PDFDocument.load(uploadedPdfBytes);
+                if(window.NativeAnnotationUtils.normalizeDuplicateObjectNumbers(candidate,window.PDFLib)){
+                    uploadedPdfBytes=await candidate.save({useObjectStreams:true});
+                }
+            }catch(error){console.debug('PDF reference recovery unavailable:',error);}
+        }
         originalPdfBytes=uploadedPdfBytes;
         // Pass a copy to pdf.js - it transfers the ArrayBuffer ownership,
         // which would detach originalPdfBytes and break pdf-lib on save.
@@ -4451,6 +4462,7 @@ async function saveAllPagesAsPDF(){
         let baseDoc;
         try{baseDoc=await PDFDocument.load(originalPdfBytes);}
         catch(e){baseDoc=await PDFDocument.load(originalPdfBytes,{ignoreEncryption:true});}
+        window.NativeAnnotationUtils.normalizeDuplicateObjectNumbers(baseDoc,window.PDFLib);
 
         updateSaveProgress(12,'Building native PDF annotations...');
         await yieldToUI();
@@ -5807,7 +5819,7 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); });
     const bd=document.getElementById('buildDate');
     if(bd){
         // Auto-stamped by hooks/pre-commit on every commit. Do not edit by hand.
-        const built='2026-09-09 16:56 PDT';
+        const built='2026-09-09 16:58 PDT';
         bd.textContent='Built '+built;
     }
 }

@@ -9,6 +9,40 @@
     const PRODUCER='DraftAnnotator';
     const NATIVE_FORMAT_VERSION=1;
 
+    // Incremental PDFs can retain different generations of one object number.
+    // pdf-lib's writers emit an xref entry for each, corrupting the index when
+    // the number is repeated. Give the extra objects unique numbers and update
+    // references without discarding either generation or any attached data.
+    function normalizeDuplicateObjectNumbers(pdfDocument,pdfLib){
+        const context=pdfDocument.context;
+        const objects=context.enumerateIndirectObjects();
+        const seenNumbers=new Set(),replacements=new Map();
+        for(const [ref,object] of objects){
+            if(seenNumbers.has(ref.objectNumber)){
+                replacements.set(ref,context.register(object));
+                context.delete(ref);
+            }else seenNumbers.add(ref.objectNumber);
+        }
+        if(!replacements.size)return 0;
+        const visited=new Set();
+        const rewrite=value=>{
+            if(value instanceof pdfLib.PDFRef)return replacements.get(value)||value;
+            if(!value||visited.has(value))return value;
+            visited.add(value);
+            if(value instanceof pdfLib.PDFDict){
+                for(const [key,entry] of value.entries())value.set(key,rewrite(entry));
+            }else if(value instanceof pdfLib.PDFArray){
+                for(let i=0;i<value.size();i++)value.set(i,rewrite(value.get(i)));
+            }else if(value instanceof pdfLib.PDFStream)rewrite(value.dict);
+            return value;
+        };
+        for(const [,object] of context.enumerateIndirectObjects())rewrite(object);
+        for(const key of Object.keys(context.trailerInfo)){
+            context.trailerInfo[key]=rewrite(context.trailerInfo[key]);
+        }
+        return replacements.size;
+    }
+
     function pdfNameText(value){
         if(!value)return '';
         if(typeof value.decodeText==='function')return value.decodeText();
@@ -427,6 +461,7 @@
         ANNOTATION_ID_PREFIX,
         NATIVE_FORMAT_VERSION,
         PRODUCER,
+        normalizeDuplicateObjectNumbers,
         normalizedRect,
         readDraftNativeAnnotations,
         removeEmbeddedFilesByName,

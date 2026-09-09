@@ -20,6 +20,32 @@ const onePixelPng = Uint8Array.from(Buffer.from(
 ));
 
 (async () => {
+    const conflicting = await pdfLib.PDFDocument.create();
+    conflicting.addPage([612, 792]);
+    const rootRef = conflicting.context.trailerInfo.Root;
+    const duplicateRef = pdfLib.PDFRef.of(rootRef.objectNumber, 1);
+    const duplicateObject = conflicting.context.obj({Title: pdfLib.PDFHexString.fromText('Preserve me')});
+    conflicting.context.assign(duplicateRef, duplicateObject);
+    conflicting.context.trailerInfo.Info = duplicateRef;
+    const refs = conflicting.context.obj([rootRef, duplicateRef]);
+    conflicting.catalog.set(pdfLib.PDFName.of('TestReferences'), refs);
+    const stream = conflicting.context.flateStream('test stream', {Related: duplicateRef});
+    const streamRef = conflicting.context.register(stream);
+    conflicting.catalog.set(pdfLib.PDFName.of('TestStream'), streamRef);
+    assert.equal(nativeUtils.normalizeDuplicateObjectNumbers(conflicting, pdfLib), 1);
+    assert.equal(nativeUtils.normalizeDuplicateObjectNumbers(conflicting, pdfLib), 0);
+    assert.equal(refs.get(0), rootRef, 'unambiguous references stay intact');
+    assert.notEqual(refs.get(1), duplicateRef);
+    assert.equal(conflicting.context.lookup(refs.get(1)), duplicateObject);
+    assert.equal(conflicting.context.trailerInfo.Info, refs.get(1));
+    assert.equal(stream.dict.get(pdfLib.PDFName.of('Related')), refs.get(1));
+    const repairedBytes = await conflicting.save({useObjectStreams: true});
+    const repaired = await pdfLib.PDFDocument.load(repairedBytes);
+    assert.equal(repaired.getPageCount(), 1);
+    assert.equal(repaired.getTitle(), 'Preserve me');
+    const objectNumbers = repaired.context.enumerateIndirectObjects().map(([ref]) => ref.objectNumber);
+    assert.equal(new Set(objectNumbers).size, objectNumbers.length);
+
     const document = await pdfLib.PDFDocument.create();
     const page = document.addPage([612, 792]);
     const font = await document.embedFont(pdfLib.StandardFonts.Helvetica);
