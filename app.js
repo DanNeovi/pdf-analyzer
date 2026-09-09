@@ -1380,6 +1380,12 @@ function ensureAnnotationPackage(value){
 async function readEmbeddedAnnotationState(pdfProxy){
     if(!pdfProxy||typeof pdfProxy.getAttachments!=='function')return null;
     const attachments=await pdfProxy.getAttachments();
+    // Ordinary PDFs have no editable package. Do not mistake an unavailable
+    // helper script for damaged embedded data when there is nothing to restore.
+    if(!attachments||!Object.keys(attachments).length)return null;
+    if(!window.EmbeddedAnnotationUtils){
+        throw new Error('Annotation library unavailable. Reload the page and try again.');
+    }
     const state=window.EmbeddedAnnotationUtils.readStateFromAttachments(attachments);
     if(!state)return null;
     const payload=ensureAnnotationPackage(state.payload);
@@ -4031,14 +4037,16 @@ async function loadPDF(f){
             console.warn('Embedded DraftAnnotator data could not be restored:',error);
             embeddedState=null;
             originalPdfBytes=uploadedPdfBytes;
-            embeddedWarning=' Embedded editable data could not be restored.';
+            embeddedWarning=` Embedded editable data could not be restored: ${error.message||'unknown error'}`;
         }
         numPages=pdfDoc.numPages;
         await renderAllPages();
         const restoredCount=embeddedState?await hydrateEmbeddedAnnotations(embeddedState.payload,nativeDescriptors):0;
-        btnSavePdf.disabled=false;recomputeUnsavedChanges();
+        const saveLibrariesReady=!!(window.PDFLib&&window.NativeAnnotationUtils&&window.EmbeddedAnnotationUtils);
+        btnSavePdf.disabled=!saveLibrariesReady;recomputeUnsavedChanges();
+        if(!saveLibrariesReady)embeddedWarning+=' Save unavailable: annotation library missing. Reload the page and try again.';
         showMsg(embeddedState
-            ?`PDF loaded: ${restoredCount} editable annotation(s) restored`
+            ?`PDF loaded: ${restoredCount} editable annotation(s) restored${embeddedWarning}`
             :`PDF loaded: ${numPages} page(s).${embeddedWarning}`);
         scheduleSpecialStudAnalysis(pdfDoc);
     }catch(e){
@@ -5799,7 +5807,7 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); });
     const bd=document.getElementById('buildDate');
     if(bd){
         // Auto-stamped by hooks/pre-commit on every commit. Do not edit by hand.
-        const built='2026-09-04 12:06 PDT';
+        const built='2026-09-09 16:56 PDT';
         bd.textContent='Built '+built;
     }
 }
