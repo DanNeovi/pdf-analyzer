@@ -1604,7 +1604,8 @@ async function hydrateEmbeddedAnnotations(payload,nativeDescriptors=[]){
         const pageNumber=Number(pageData.pageNumber);
         if(pageNumber<1||pageNumber>numPages)continue;
         const objects=hasNativeState
-            ?pageData.fabric.objects.filter(object=>object.draftAnnotationId&&actualById.has(object.draftAnnotationId))
+            ?pageData.fabric.objects.filter(object=>object.draftAnnotationId&&
+                (actualById.has(object.draftAnnotationId)||!savedById.has(object.draftAnnotationId)))
             :pageData.fabric.objects;
         const restorablePage={
             ...pageData,
@@ -5819,7 +5820,7 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); });
     const bd=document.getElementById('buildDate');
     if(bd){
         // Auto-stamped by hooks/pre-commit on every commit. Do not edit by hand.
-        const built='2026-09-09 16:58 PDT';
+        const built='2026-09-09 16:59 PDT';
         bd.textContent='Built '+built;
     }
 }

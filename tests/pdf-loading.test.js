@@ -30,5 +30,25 @@ const read = attachments => context.readEmbeddedAnnotationState({getAttachments:
     assert.equal(await read({unrelated: {filename: 'notes.txt', content: new Uint8Array()}}), null);
     attachments.state.content = new TextEncoder().encode('{broken');
     await assert.rejects(read(attachments), /invalid JSON/);
+
+    // Objects without a native appearance (for example, outside the crop box)
+    // still belong to the lossless package. Only discard annotations that had
+    // a native counterpart at save time and were subsequently deleted.
+    const hydration = vm.createContext({
+        window: {NativeAnnotationUtils: {NATIVE_FORMAT_VERSION: 1}},
+        numPages: 1, fabricCanvases: new Map(), pendingEmbeddedPageAnnotations: new Map(),
+        recomputeUnsavedChanges() {}
+    });
+    const hydrateStart = app.indexOf('async function hydrateEmbeddedAnnotations(');
+    vm.runInContext(app.slice(hydrateStart, app.indexOf('\nfunction undo(', hydrateStart)), hydration);
+    const hydratedCount = await hydration.hydrateEmbeddedAnnotations({
+        pages: [{pageNumber: 1, fabric: {objects: [
+            {draftAnnotationId: 'visible'}, {draftAnnotationId: 'offpage'}, {draftAnnotationId: 'deleted'}
+        ]}}],
+        nativeAnnotations: {version: 1, descriptors: [{id: 'visible'}, {id: 'deleted'}]}
+    }, [{id: 'visible'}]);
+    assert.equal(hydratedCount, 2);
+    assert.deepEqual(hydration.pendingEmbeddedPageAnnotations.get(1).fabric.objects.map(o => o.draftAnnotationId),
+        ['visible', 'offpage']);
     console.log('PDF loading tests passed');
 })().catch(error => { console.error(error); process.exitCode = 1; });
